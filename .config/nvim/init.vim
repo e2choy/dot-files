@@ -1,6 +1,10 @@
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+let NERDTreeShowHidden=1
+let loaded_matchit = 1
+let g:loaded_matchparen=1
 " set t_Co=256
+" nvim -u NONE
 let g:airline_theme='kalisi'
 
 " Plugins {{{
@@ -21,6 +25,8 @@ function! VimrcLoadPlugins()
   Plug 'bling/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
   Plug 'scrooloose/nerdtree'
+  Plug 'ctrlpvim/ctrlp.vim'
+  "Plug 'junegunn/fzf'
   " }}}
 
   " Neomake {{{
@@ -60,18 +66,17 @@ function! VimrcLoadMappings()
   nnoremap <f1> <esc>:help 
   vnoremap <f1> <esc>:help 
   map <silent> <f12> :mode<cr>
-  "nmap <f5> :wa<cr> \| :cd %:p:h<cr> \| :!make<cr> \| copen<cr>
-  "nmap <f6> :!make<cr> 
-  "nmap <f8> :cn<cr>
-  nnoremap <f5> :wa<bar>silent make<bar>cwindow<cr>
+  "map <f11> :mode<cr>
+  nnoremap <f5> :wa<bar>silent Neomake!<bar>cwindow<cr>
   nnoremap <f8> :cn<cr>
-  "\| :cc<cr>
-  " au VimResized * exe ":mode<cr>"
+  nnoremap <f7> :cp<cr>
+  "map <c-,> :CtrlP<cr>
+  
   " move text up/down
-  nnoremap <silent> <c-j> :m .+1<cr>==
-  nnoremap <silent> <c-k> :m .-2<cr>==
-  vnoremap <silent> <c-j> :m '>+1<cr>gv=gv
-  vnoremap <silent> <c-k> :m '<-2<cr>gv=gv
+  "nnoremap <silent> <c-j> :m .+1<cr>==
+  "nnoremap <silent> <c-k> :m .-2<cr>==
+  "vnoremap <silent> <c-j> :m '>+1<cr>gv=gv
+  "vnoremap <silent> <c-k> :m '<-2<cr>gv=gv
   " }}}
   " Editing {{{
   nnoremap <leader>gf :e <cfile><cr>
@@ -100,6 +105,7 @@ function! VimrcLoadMappings()
     tnoremap <silent> <c-w>z <c-\><c-n>:ZoomWinTabToggle<cr>
   endif
   au VimEnter * NERDTree
+  " au VimResized * :mode
   " }}}
   " REPL integration {{{
   "nnoremap <silent> <f6> :REPLSendLine<cr>
@@ -149,10 +155,11 @@ set tabstop=2 " display tabs with the width of two spaces
 set shiftwidth=2 " indent with two spaces 
 set ignorecase " ignore case when searching
 set smartcase " disable 'ignorecase' if search pattern has uppercase characters
-set incsearch " highlight matches while typing search pattern
-set hlsearch " highlight previous search matches
+"set incsearch " highlight matches while typing search pattern
+"set hlsearch " highlight previous search matches
 set wrap " automatically wrap text when 'textwidth' is reached
 set foldmethod=indent " by default, fold using indentation
 set nofoldenable " don't fold by default
 set foldlevel=0 " if fold everything if 'foldenable' is set
 set foldnestmax=10 " maximum fold depth
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
