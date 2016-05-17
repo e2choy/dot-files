@@ -1,9 +1,5 @@
 #default makefile to use for programs
-
 PROGRAM := a.out
-
-#release mode (set to debug only)
-MODE ?= debug 
 
 #location of object files
 OBJECT_DIR := ./Objects
@@ -25,8 +21,10 @@ LIBS =
 #compiler
 CXX = g++
 #compile flags
-ifeq ($(mode), debug)
+ifeq ($(MODE), debug)
   CXXFLAGS = -std=c++11 -Wall -O0 -g -MP -MMD -I$(INCLUDE)
+else
+  CXXFLAGS = -std=c++11 -Wall -O3 -MP -MMD -I$(INCLUDE)
 endif
 #linker flags
 LDFLAGS =
@@ -35,8 +33,6 @@ LDFLAGS =
 all : $(PROGRAM)
 
 $(PROGRAM) : $(OBJECTS)
-	@echo "depends is " $(DEPENDS)
-	@echo "objects is " $(OBJECTS)
 	$(CXX) -o $(PROGRAM) $(LDFLAGS) $(OBJECTS) $(LIBS)
 
 #make directory for objects directory
