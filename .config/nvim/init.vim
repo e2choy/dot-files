@@ -6,6 +6,17 @@ let g:loaded_matchparen=1
 " set t_Co=256
 " nvim -u NONE
 let g:airline_theme='kalisi'
+let g:ycm_confirm_extra_conf=0
+let g:ctrlp_switch_buffer = 'Et'
+let g:neomake_open_list = 2
+let g:ctrlp_open_multiple_files = 'ij'
+let g:ycm_show_diagnostics_ui = 0
+set wildignore+=*.o,*.d
+set clipboard=unnamedplus
+set autoindent
+set cindent
+set hidden
+set nohlsearch
 
 " Plugins {{{
 function! VimrcLoadPlugins()
@@ -26,23 +37,25 @@ function! VimrcLoadPlugins()
   Plug 'vim-airline/vim-airline-themes'
   Plug 'scrooloose/nerdtree'
   Plug 'ctrlpvim/ctrlp.vim'
+  Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
   "Plug 'junegunn/fzf'
   " }}}
 
   " Neomake {{{
   Plug 'benekastah/neomake'
-  let g:neomake_verbose = 0
-  augroup Neomake
-    au!
-    au! BufWritePost * Neomake
-  augroup END
+  "let g:neomake_verbose = 0
+  "augroup Neomake
+  "  au!
+  "  au! BufWritePost * Neomake
+  "augroup END
   " }}}
  
-  " YouCompleteMe {{{
-  "  if g:has_python
-  "    Plug 'Valloric/YouCompleteMe'
-  "  endif
-  " }}}
+  " YouCompleteMe plugin
+  "YouCompleteMe {{{
+   if g:has_python
+     Plug 'Valloric/YouCompleteMe'
+   endif
+  "}}}
 
   call plug#end()
 endfunction
@@ -67,9 +80,13 @@ function! VimrcLoadMappings()
   vnoremap <f1> <esc>:help 
   map <silent> <f12> :mode<cr>
   "map <f11> :mode<cr>
-  nnoremap <f5> :wa<bar>silent Neomake!<bar>cwindow<cr>
-  nnoremap <f8> :cn<cr>
+  "nnoremap <f5> :wa<bar>Neomake!<bar>cwindow<cr>
+  "nnoremap <f5> :wa<bar>silent Neomake!<bar>cwindow<cr>
+  "nnoremap <f5> :wa<bar>Neomake!<bar>cwindow<cr>
+  "nnoremap <f5> :wa<bar>Neomake!<cr>
+  nnoremap <f5> :wa<bar>Neomake!<cr>
   nnoremap <f7> :cp<cr>
+  nnoremap <f8> :cn<cr>
   "map <c-,> :CtrlP<cr>
   
   " move text up/down
@@ -104,14 +121,30 @@ function! VimrcLoadMappings()
     tnoremap <pagedown> <c-\><c-n><pagedown>
     tnoremap <silent> <c-w>z <c-\><c-n>:ZoomWinTabToggle<cr>
   endif
-  au VimEnter * NERDTree
-  " au VimResized * :mode
-  " }}}
-  " REPL integration {{{
-  "nnoremap <silent> <f6> :REPLSendLine<cr>
-  "vnoremap <silent> <f6> :REPLSendSelection<cr>
-  " }}}
+  "autocmd StdinReadPre * let s:std_in=1
+  "autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+  "autocmd BufEnter * if &modifiable | NERDTreeFind | wincmd p | endif
+  set autochdir
+  autocmd VimEnter * if &modifiable | NERDTree % | wincmd p | endif
+
+
 endfunction
+
+fun! SetMkfile()
+  let filemk = "Makefile"
+  let pathmk = "./"
+  let depth = 1
+  while depth < 4
+    if filereadable(pathmk . filemk)
+      return pathmk
+    endif
+    let depth += 1
+    let pathmk = "../" . pathmk
+  endwhile
+  return "."
+endf
+
+command! -nargs=* Make tabnew | let $mkpath = SetMkfile() | make <args> -C $mkpath | cwindow 10
 
 if !exists('g:vimrc_initialized')
   let g:is_windows = has('win32') || has('win64')
@@ -162,4 +195,6 @@ set foldmethod=indent " by default, fold using indentation
 set nofoldenable " don't fold by default
 set foldlevel=0 " if fold everything if 'foldenable' is set
 set foldnestmax=10 " maximum fold depth
-autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o "disable autocomment
+autocmd CompleteDone * pclose
+
