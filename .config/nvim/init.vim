@@ -11,6 +11,8 @@ let g:ctrlp_switch_buffer = 'Et'
 let g:neomake_open_list = 2
 let g:ctrlp_open_multiple_files = 'ij'
 let g:ycm_show_diagnostics_ui = 0
+let g:ctrlp_map = '<c-o>'
+"let g:ycm_autoclose_preview_window_after_insertion = 1
 set wildignore+=*.o,*.d
 set clipboard=unnamedplus
 set autoindent
@@ -79,15 +81,17 @@ function! VimrcLoadMappings()
   nnoremap <f1> <esc>:help 
   vnoremap <f1> <esc>:help 
   map <silent> <f12> :mode<cr>
-  "map <f11> :mode<cr>
+  map <f11> :mode<cr>
   "nnoremap <f5> :wa<bar>Neomake!<bar>cwindow<cr>
   "nnoremap <f5> :wa<bar>silent Neomake!<bar>cwindow<cr>
   "nnoremap <f5> :wa<bar>Neomake!<bar>cwindow<cr>
   "nnoremap <f5> :wa<bar>Neomake!<cr>
-  nnoremap <f5> :wa<bar>Neomake!<cr>
+  nnoremap <f5> :wa<bar>:!tmux new -d "./a.out"<cr>
+  nnoremap <f6> :cfirst<cr>
   nnoremap <f7> :cp<cr>
   nnoremap <f8> :cn<cr>
-  "map <c-,> :CtrlP<cr>
+  nnoremap <C-S-B> :wa<bar>Neomake!<cr>
+  nnoremap <C-S-E> :copen<bar>:cfirst<cr>
   
   " move text up/down
   "nnoremap <silent> <c-j> :m .+1<cr>==
@@ -124,8 +128,9 @@ function! VimrcLoadMappings()
   "autocmd StdinReadPre * let s:std_in=1
   "autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
   "autocmd BufEnter * if &modifiable | NERDTreeFind | wincmd p | endif
-  set autochdir
-  autocmd VimEnter * if &modifiable | NERDTree % | wincmd p | endif
+  set autochdir "working directory to current file
+  "autocmd VimEnter * if &modifiable | NERDTree % | wincmd p | endif
+  autocmd VimEnter * if argc() | NERDTree % | wincmd p | endif
 
 
 endfunction
@@ -191,10 +196,31 @@ set smartcase " disable 'ignorecase' if search pattern has uppercase characters
 "set incsearch " highlight matches while typing search pattern
 "set hlsearch " highlight previous search matches
 set wrap " automatically wrap text when 'textwidth' is reached
-set foldmethod=indent " by default, fold using indentation
+"set foldmethod=indent " by default, fold using indentation
+set foldmethod=syntax " by default, fold using indentation
 set nofoldenable " don't fold by default
 set foldlevel=0 " if fold everything if 'foldenable' is set
 set foldnestmax=10 " maximum fold depth
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o "disable autocomment
-autocmd CompleteDone * pclose
-
+"autocmd CompleteDone * pclose
+"map <A-p> :cp<cr>
+map <C-p> :cp<cr>
+map <C-n> :cn<cr>
+"function s:Cursor_Moved()
+set cul
+"  let cur_pos = winline()
+"if g:last_pos == 0
+"  set cul
+"  let g:last_pos = cur_pos
+"  return
+"endif
+"let diff = g:last_pos - cur_pos
+"if diff > 1 || diff < -1
+"  set cul
+"else
+"  set nocul
+"endif
+"let g:last_pos = cur_pos
+"endfunction
+"autocmd CursorMoved,CursorMovedI * call s:Cursor_Moved()
+"let g:last_pos = 0
