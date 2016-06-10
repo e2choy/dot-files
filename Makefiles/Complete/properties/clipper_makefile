@@ -1,0 +1,4 @@
+LIBS += -L./clipper -l:libpolyclipping.so.19
+
+INCLUDE += -I/clipper
+
