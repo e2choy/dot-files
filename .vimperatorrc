@@ -1,0 +1,9 @@
+nnoremap <c-1> :back<cr>
+nnoremap <c-2> :forward<cr>
+nnoremap <c-s-p> i<c-s-p>
+inoremap <C-a> <C-Home><C-S-End>
+" map <C-c> <Esc>
+" map! <C-c> <Esc>
+map <C-b> :bmarks! 
+"map <C-b> i<C-b> 
+map <C-p> :hardcopy<cr>
